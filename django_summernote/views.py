@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+django_summernote.views
+~~~~~~~~~~~~~~~~~~~~~~~
+
+This file includes django-summernote views
+"""
 from django import VERSION as django_version
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import HttpResponse, JsonResponse
@@ -13,12 +20,14 @@ except ImportError:
 
 
 class SummernoteEditor(TemplateView):
+    """SummernoteEditor provides a view for iframe-ed editor"""
     template_name = 'django_summernote/widget_iframe_editor.html'
 
     @using_config
     def __init__(self):
         super(SummernoteEditor, self).__init__()
 
+        # Create css and js files by merging default files and given by user.
         static_default_css = tuple(static(x) for x in config['default_css'])
         static_default_js = tuple(static(x) for x in config['default_js'])
 
@@ -36,10 +45,16 @@ class SummernoteEditor(TemplateView):
 
     @using_config
     def get_context_data(self, **kwargs):
+        # Pass variables for template rendering
         context = super(SummernoteEditor, self).get_context_data(**kwargs)
 
+        # Id of original element (e.g. textarea)
         context['id_src'] = self.kwargs['id']
+
+        # Replace dash with underscore to prevent errors
         context['id'] = self.kwargs['id'].replace('-', '_')
+        
+        # Pass generated variables to renderer
         context['css'] = self.css
         context['js'] = self.js
         context['config'] = config
@@ -48,10 +63,12 @@ class SummernoteEditor(TemplateView):
 
 
 class SummernoteUploadAttachment(View):
+    """SummernoteUploadAttachment stores files as configured attachment model"""
     def __init__(self):
         super(SummernoteUploadAttachment, self).__init__()
 
     def get(self, request, *args, **kwargs):
+        """GET requests are not allowed"""
         return JsonResponse({
             'status': 'false',
             'message': _('Only POST method is allowed'),
@@ -59,10 +76,14 @@ class SummernoteUploadAttachment(View):
 
     @using_config
     def post(self, request, *args, **kwargs):
+        """Store files when user requests as POST method"""
+
+        # Check whether user was authenticated or not
         authenticated = \
             request.user.is_authenticated if django_version >= (1, 10) \
             else request.user.is_authenticated()
 
+        # Only authenticated users are allowed to upload if the option is True
         if config['attachment_require_authentication'] and \
                 not authenticated:
             return JsonResponse({
@@ -70,13 +91,14 @@ class SummernoteUploadAttachment(View):
                 'message': _('Only authenticated users are allowed'),
             }, status=403)
 
+        # Find files in the request
         if not request.FILES.getlist('files'):
             return JsonResponse({
                 'status': 'false',
                 'message': _('No files were requested'),
             }, status=400)
 
-        # remove unnecessary CSRF token, if found
+        # Remove unnecessary CSRF token, if found
         kwargs = request.POST.copy()
         kwargs.pop("csrfmiddlewaretoken", None)
 
@@ -85,7 +107,7 @@ class SummernoteUploadAttachment(View):
 
             for file in request.FILES.getlist('files'):
 
-                # create instance of appropriate attachment class
+                # Create instance of appropriate attachment class
                 klass = get_attachment_model()
                 attachment = klass()
 
@@ -98,7 +120,7 @@ class SummernoteUploadAttachment(View):
                         'message': _('File size exceeds the limit allowed and cannot be saved'),
                     }, status=400)
 
-                # calling save method with attachment parameters as kwargs
+                # Calling save method with attachment parameters as kwargs
                 attachment.save(**kwargs)
                 attachments.append(attachment)
 

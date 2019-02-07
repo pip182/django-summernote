@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+django_summernote.apps
+~~~~~~~~~~~~~~~~~~~~~~
+
+App class for django_summernote which holds app configuration
+"""
 from django.apps import AppConfig
 from django.conf import settings as django_settings
 from django_summernote.utils import (
@@ -9,7 +16,10 @@ class DjangoSummernoteConfig(AppConfig):
     name = 'django_summernote'
     verbose_name = 'Django Summernote'
 
+    # Default theme is Bootstrap 3
     theme = 'bs3'
+
+    # Actual configuration
     config = {}
 
     def __init__(self, app_name, app_module):
@@ -17,6 +27,7 @@ class DjangoSummernoteConfig(AppConfig):
         self.update_config()
 
     def get_default_config(self):
+        """Return default configuration values"""
         return {
             # Using SummernoteWidget(iframe widget) for admin pages by default
             'iframe': True,
@@ -92,7 +103,8 @@ class DjangoSummernoteConfig(AppConfig):
     def _copy_old_configs(self, user, default):
         """
         NOTE: Will be deprecated from 0.9
-        Copying old-style settings for backword-compatibility
+
+        Copy old-style configurations for backword-compatibility.
         """
         DEPRECATED_SUMMERNOTE_CONFIGS = (
             'width',
@@ -107,6 +119,13 @@ class DjangoSummernoteConfig(AppConfig):
                 self.config['summernote'][key] = default['summernote'].get(key)
 
     def update_config(self):
+        """
+        Merge configuration dictionaries.
+
+        self.config is an actual configuration dictionary that will be used in running.
+        This function create self.config by merging default configuration dict with 
+        given `SUMMERNOTE_CONFIG`. And it also update self.config by setting theme files.
+        """
         self.theme = getattr(django_settings, 'SUMMERNOTE_THEME', 'bs3')
         DEFAULT_CONFIG = self.get_default_config()
 

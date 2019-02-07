@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+django_summernote.tests
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Test class for django_summernote
+"""
 from django.apps import apps
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.models import User
@@ -17,6 +23,7 @@ from imp import reload
 
 class DjangoSummernoteTest(TestCase):
     def setUp(self):
+        """Default setup for testing"""
         self.username = 'lqez'
         self.password = 'ohmygoddess'
         self.site = AdminSite()
@@ -29,6 +36,7 @@ class DjangoSummernoteTest(TestCase):
         self.assertTrue(True)
 
     def test_url(self):
+        """SummernoteWidget page must be rendered without error and have correct files."""
         url = reverse('django_summernote-editor', kwargs={'id': 'foobar'})
         response = self.client.get(url)
 
@@ -37,6 +45,7 @@ class DjangoSummernoteTest(TestCase):
         self.assertContains(response, 'summernote.css')
 
     def test_widget(self):
+        """SummernoteWidget must be rendered with given id."""
         from django_summernote.widgets import SummernoteWidget
 
         widget = SummernoteWidget()
@@ -49,6 +58,7 @@ class DjangoSummernoteTest(TestCase):
         assert 'id="id_foobar"' in html
 
     def test_widget_inplace(self):
+        """SummernoteInplaceWidget must be rendered with given id."""
         from django_summernote.widgets import SummernoteInplaceWidget
 
         widget = SummernoteInplaceWidget()
@@ -59,6 +69,7 @@ class DjangoSummernoteTest(TestCase):
         assert 'summernote' in html
 
     def test_form(self):
+        """CharField with SummernoteWidget must be rendered with given id"""
         from django import forms
         from django_summernote.widgets import SummernoteWidget
 
@@ -73,6 +84,7 @@ class DjangoSummernoteTest(TestCase):
         assert 'id="id_foobar"' in html
 
     def test_formfield(self):
+        """SummernoteTextFormField must be rendered as using SummernoteWidget"""
         from django import forms
         from django_summernote.fields import SummernoteTextFormField
 
@@ -87,6 +99,7 @@ class DjangoSummernoteTest(TestCase):
         assert 'id="id_foobar"' in html
 
     def test_field(self):
+        """SummernoteTextField must be rendered as using SummernoteWidget"""
         from django import forms
         from django_summernote.fields import SummernoteTextField
 
@@ -106,6 +119,7 @@ class DjangoSummernoteTest(TestCase):
         assert 'id="id_foobar"' in html
 
     def test_empty(self):
+        """Some strings should be regarded as empty"""
         from django import forms
         from django_summernote.widgets import SummernoteWidget
 
@@ -124,6 +138,7 @@ class DjangoSummernoteTest(TestCase):
         assert f.cleaned_data.get('foobar')
 
     def test_attachment(self):
+        """Image uploading should be ran without error"""
         import os
         url = reverse('django_summernote-upload_attachment')
 
@@ -136,6 +151,7 @@ class DjangoSummernoteTest(TestCase):
             self.assertContains(response, '"size": ')
 
     def test_attachment_with_custom_storage(self):
+        """Setting custom attachment storage class"""
         self.summernote_config['attachment_storage_class'] = \
             'django.core.files.storage.DefaultStorage'
 
@@ -152,6 +168,7 @@ class DjangoSummernoteTest(TestCase):
         file_field.storage = original_storage
 
     def test_attachment_with_bad_storage(self):
+        """Invalid storage classes should raise exceptions"""
         from django.core.exceptions import ImproperlyConfigured
 
         # ValueError
@@ -191,6 +208,7 @@ class DjangoSummernoteTest(TestCase):
         file_field.storage = original_storage
 
     def test_get_attachment_model(self):
+        """Invalid attachment configuration should raise exceptions"""
         from django.core.exceptions import ImproperlyConfigured
 
         # ValueError
@@ -212,18 +230,21 @@ class DjangoSummernoteTest(TestCase):
             get_attachment_model()
 
     def test_attachment_bad_request(self):
+        """Uploading attachment should be requested with POST method"""
         url = reverse('django_summernote-upload_attachment')
         response = self.client.get(url)
 
         self.assertNotEqual(response.status_code, 200)
 
     def test_attachment_no_attachment(self):
+        """Uploading attachment should not be requested without a file"""
         url = reverse('django_summernote-upload_attachment')
         response = self.client.post(url)
 
         self.assertNotEqual(response.status_code, 200)
 
     def test_attachment_filesize_exceed(self):
+        """Exceeding filesize should raise error"""
         import os
 
         url = reverse('django_summernote-upload_attachment')
@@ -238,6 +259,7 @@ class DjangoSummernoteTest(TestCase):
         self.summernote_config['attachment_filesize_limit'] = old_limit
 
     def test_attachment_require_authentication(self):
+        """If attachment_require_authentication set True, only authenticated users can upload files"""
         url = reverse('django_summernote-upload_attachment')
         self.summernote_config['attachment_require_authentication'] = True
 
@@ -258,8 +280,14 @@ class DjangoSummernoteTest(TestCase):
         self.summernote_config['attachment_require_authentication'] = False
 
     def test_attachment_not_require_authentication(self):
+        """If attachment_require_authentication set False, anyone can upload files"""
         url = reverse('django_summernote-upload_attachment')
         self.summernote_config['attachment_require_authentication'] = False
+
+        self.user = None
+        with open(__file__, 'rb') as fp:
+            response = self.client.post(url, {'files': [fp]})
+            self.assertEqual(response.status_code, 200)
 
         self.user = User.objects.create_user(
             username=self.username, password=self.password)
@@ -270,6 +298,7 @@ class DjangoSummernoteTest(TestCase):
 
     @override_settings(USE_THOUSAND_SEPARATOR=True)
     def test_attachment_with_thousand_separator_option(self):
+        """Even with USE_THOUSAND_SEPARATOR, uploading attachments should run without error"""
         import os
         url = reverse('django_summernote-upload_attachment')
         size = os.path.getsize(__file__)
@@ -281,6 +310,7 @@ class DjangoSummernoteTest(TestCase):
             self.assertEqual(res['files'][0]['size'], size)
 
     def test_lang_specified(self):
+        """Page should be rendered with given language option"""
         old_lang = self.summernote_config['summernote']['lang']
         self.summernote_config['summernote']['lang'] = 'ko-KR'
 
@@ -294,6 +324,7 @@ class DjangoSummernoteTest(TestCase):
         assert '"lang": "ko-KR"' in html
 
     def test_lang_accept_language(self):
+        """Page should be rendered with detected language automatically"""
         from django.utils.translation import activate
         activate('fr')
 
@@ -306,6 +337,7 @@ class DjangoSummernoteTest(TestCase):
         assert '"lang": "fr-FR"' in html
 
     def test_admin_model(self):
+        """Testing admin page with Summernote mixins"""
         from django_summernote.admin import SummernoteModelAdmin
         from django_summernote.admin import SummernoteInlineModelAdmin
         from django_summernote.widgets import SummernoteWidget
@@ -344,6 +376,7 @@ class DjangoSummernoteTest(TestCase):
         )
 
     def test_admin_model_inplace(self):
+        """Testing admin page with SummernoteInplace mixins"""
         from django_summernote.admin import SummernoteModelAdmin
         from django_summernote.widgets import SummernoteInplaceWidget
 
@@ -365,6 +398,7 @@ class DjangoSummernoteTest(TestCase):
         self.summernote_config['iframe'] = True
 
     def test_admin_summernote_fields(self):
+        """Testing admin page with Summernote widget"""
         from django_summernote.admin import SummernoteModelAdmin
         from django_summernote.widgets import SummernoteWidget
 
@@ -387,6 +421,7 @@ class DjangoSummernoteTest(TestCase):
         )
 
     def test_attachment_admin_default_name(self):
+        """Default attachment name should follow the given filename"""
         from django_summernote.admin import AttachmentAdmin
         from django_summernote.models import Attachment
         from django.core.files import File
@@ -403,6 +438,7 @@ class DjangoSummernoteTest(TestCase):
             self.assertEqual(attachment.name, os.path.basename(__file__))
 
     def test_config_allow_blank_values(self):
+        """Blank configuration values should be passed into JavaScript codes"""
         from django_summernote.widgets import SummernoteWidget
 
         self.summernote_config['summernote']['tableClassName'] = ''
@@ -414,6 +450,7 @@ class DjangoSummernoteTest(TestCase):
         assert '"tableClassName": ""' in html
 
     def test_widgets_with_attributes(self):
+        """Summernote widget should be rendered with given attributes"""
         from django_summernote.widgets import (SummernoteWidget, SummernoteInplaceWidget)
 
         widget = SummernoteInplaceWidget(attrs={'class': 'special'})
@@ -431,6 +468,7 @@ class DjangoSummernoteTest(TestCase):
         assert 'class="special"' in html
 
     def test_widgets_with_adhoc_settings(self):
+        """Summernote widget should be rendered with additional value in render function"""
         from django_summernote.widgets import (SummernoteWidget, SummernoteInplaceWidget)
 
         widget = SummernoteInplaceWidget(attrs={'summernote': {'toolbar': [['font', ['bold']]]}})
@@ -448,6 +486,7 @@ class DjangoSummernoteTest(TestCase):
         assert '"toolbar": [["font", ["italic"]]]' in html
 
     def test_old_style_configs(self):
+        """Old style configuration should be copied into right location"""
         from django_summernote.widgets import (SummernoteWidget, SummernoteInplaceWidget)
 
         OLD_STYLE_CONFIG = {
@@ -477,6 +516,7 @@ class DjangoSummernoteTest(TestCase):
         assert '"toolbar": [["font", ["bold"]]]' in html
 
     def test_theme_bootstrap3(self):
+        """By default, Summernote widget should use Bootstrap3"""
         from django_summernote.utils import SUMMERNOTE_THEME_FILES
 
         url = reverse('django_summernote-editor', kwargs={'id': 'id_foobar'})
@@ -487,6 +527,7 @@ class DjangoSummernoteTest(TestCase):
 
     @override_settings(SUMMERNOTE_THEME='bs4')
     def test_theme_bootstrap4(self):
+        """By setting theme, Summernote widget should use proper theme files"""
         from django_summernote.utils import SUMMERNOTE_THEME_FILES
 
         # Force update summernote config to reset theme files

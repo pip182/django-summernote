@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+django_summernote.utils
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Helper functions used widely in this app
+"""
 import os
 import uuid
 from datetime import datetime
@@ -9,7 +16,7 @@ from functools import wraps
 from importlib import import_module
 
 
-# A conversion table from language to locale
+# Conversion table from language to locale
 LANG_TO_LOCALE = {
     'ar': 'ar-AR',
     'bg': 'bg-BG',
@@ -52,7 +59,7 @@ LANG_TO_LOCALE = {
     'zh': 'zh-CN',
 }
 
-# Theme files dictionary
+# Theme files
 SUMMERNOTE_THEME_FILES = {
     'bs3': {
         'base_css': (
@@ -116,7 +123,7 @@ SUMMERNOTE_THEME_FILES = {
 
 def using_config(_func=None):
     """
-    This allows a function to use Summernote configuration
+    This allows given function to use Summernote configuration
     as a global variable, temporarily.
     """
     def decorator(func):
@@ -158,7 +165,7 @@ def uploaded_filepath(instance, filename):
 
 def get_theme_files(theme, part):
     """
-    Return selected theme files
+    Return selected theme files.
     """
     return SUMMERNOTE_THEME_FILES[theme][part]
 
@@ -166,7 +173,7 @@ def get_theme_files(theme, part):
 @using_config
 def get_proper_language():
     """
-    Return the proper language by get_language()
+    Return the proper language by get_language().
     """
     lang = config['summernote'].get('lang')
 
@@ -181,7 +188,6 @@ def get_attachment_model():
     """
     Returns the Attachment model that is active in this project.
     """
-
     try:
         from .models import AbstractAttachment
         klass = apps.get_model(config["attachment_model"])
@@ -202,13 +208,16 @@ def get_attachment_model():
 @using_config
 def get_attachment_upload_to():
     """
-    Return 'attachment_upload_to' from configuration
+    Return 'attachment_upload_to' from configuration.
     """
     return config['attachment_upload_to']
 
 
 @using_config
 def get_attachment_storage():
+    """
+    Return the attachment storage class.
+    """
     # module importer code comes from
     # https://github.com/django-debug-toolbar/django-debug-toolbar/
     config = apps.get_app_config('django_summernote').config

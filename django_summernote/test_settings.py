@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+django_summernote.test_settings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Django settings for testing
+"""
 import django
 
 DATABASES = {

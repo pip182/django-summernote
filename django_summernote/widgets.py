@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+django_summernote.widgets
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This module provides widgets that displays given field as Summernote editor.
+"""
 import json
 from django import forms
 from django.conf import settings as django_settings
@@ -15,10 +22,15 @@ __all__ = ['SummernoteWidget', 'SummernoteInplaceWidget']
 
 
 class SummernoteWidgetBase(forms.Textarea):
+    """SummernoteWidgetBase contains common methods for SummernoteWidget and SummernoteInplaceWidget"""
     @using_config
     def summernote_settings(self):
+        """Return configuration values with variables generated on runtime"""
+
+        # Get a language name
         lang = get_proper_language()
 
+        # Clone before manipulation
         summernote_settings = config.get('summernote', {}).copy()
         summernote_settings.update({
             'lang': lang,
@@ -28,15 +40,6 @@ class SummernoteWidgetBase(forms.Textarea):
             },
         })
         return summernote_settings
-
-    @using_config
-    def value_from_datadict(self, data, files, name):
-        value = data.get(name, None)
-
-        if value in config['empty']:
-            return None
-
-        return value
 
     def use_required_attribute(self, initial):
         # Contenteditable widget cannot use HTML5 validation
