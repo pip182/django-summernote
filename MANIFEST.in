@@ -1,6 +1,0 @@
-recursive-include django_summernote *
-exclude django_summernote/test*
-prune djs_playground
-
-global-exclude *.pyc
-global-exclude .ropeproject/*
