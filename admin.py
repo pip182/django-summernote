@@ -38,4 +38,6 @@ class AttachmentAdmin(admin.ModelAdmin):
     ordering = ('-id',)
     form = AttachmentAdminForm
 
-admin.site.register(get_attachment_model(), AttachmentAdmin)
+
+# Enable if we want to manage the attachments from the django admin
+# admin.site.register(get_attachment_model(), AttachmentAdmin)
