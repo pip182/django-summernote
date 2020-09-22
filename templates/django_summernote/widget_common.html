@@ -12,7 +12,7 @@ function initSummernote_{{ id_safe }}() {
     $(iframe).height(settings.height);
 {% else %}
     var origin = window.document.getElementById('{{ id }}');
-    var csrftoken = getCookie('{{ CSRF_COOKIE_NAME }}');
+    var csrftoken = Cookies.get('{{ CSRF_COOKIE_NAME }}');
     var settings = {{ settings|safe }};
     var $sn = $(origin);
 {% endif %}
