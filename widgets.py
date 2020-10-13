@@ -106,7 +106,6 @@ class SummernoteInplaceWidget(SummernoteWidgetBase):
     def render(self, name, value, attrs=None, **kwargs):
         summernote_settings = self.summernote_settings()
         summernote_settings.update(self.attrs.get('summernote', {}))
-        print("SUMMERNOTE_SETTINGS", summernote_settings)
         html = super(SummernoteInplaceWidget, self).render(
             name, value, attrs=attrs, **kwargs
         )
