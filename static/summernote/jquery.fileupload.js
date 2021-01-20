@@ -12,7 +12,8 @@
 /* jshint nomen:false */
 /* global define, require, window, document, location, Blob, FormData */
 
-;(function (factory) {
+
+(function (factory) {
     'use strict';
     if (typeof define === 'function' && define.amd) {
         // Register as an anonymous AMD module:
@@ -30,7 +31,9 @@
         // Browser globals:
         factory(window.jQuery);
     }
-}(function ($) {
+});
+
+$(function ($) {
     'use strict';
 
     // Detect file input support, based on
@@ -1499,4 +1502,4 @@
 
     });
 
-})(jQuery, undefined));
+});

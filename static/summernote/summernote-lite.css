@@ -1065,7 +1065,7 @@ a.note-dropdown-item:hover {
 
 .note-editor.note-frame.codeview .note-editing-area .note-codable,
 .note-editor.note-airframe.codeview .note-editing-area .note-codable {
-    display: block
+    display: block;
 }
 
 .note-editor.note-frame .note-editing-area,
@@ -1083,6 +1083,14 @@ a.note-dropdown-item:hover {
 .note-editor.note-frame .note-editing-area .note-editable[contenteditable=false],
 .note-editor.note-airframe .note-editing-area .note-editable[contenteditable=false] {
     background-color: #8080801d
+}
+
+.summernote-div textarea {
+    display: none !important;
+}
+
+.dropdown-toggle::after {
+    display: none;
 }
 
 .note-editor.note-frame .note-editing-area .note-codable,
@@ -1357,25 +1365,25 @@ a.note-dropdown-item:hover {
 
 .note-popover .popover-content .note-color-all .note-dropdown-menu,
 .note-editor .note-toolbar .note-color-all .note-dropdown-menu {
-    min-width: 337px
+    /* min-width: 337px */
 }
 
 .note-popover .popover-content .note-color .dropdown-toggle,
 .note-editor .note-toolbar .note-color .dropdown-toggle {
     width: 20px;
-    padding-left: 5px
+    padding-left: 5px;
 }
 
 .note-popover .popover-content .note-color .note-dropdown-menu .note-palette,
 .note-editor .note-toolbar .note-color .note-dropdown-menu .note-palette {
     display: inline-block;
     margin: 0;
-    width: 160px
+    width: 160px;
 }
 
 .note-popover .popover-content .note-color .note-dropdown-menu .note-palette:first-child,
 .note-editor .note-toolbar .note-color .note-dropdown-menu .note-palette:first-child {
-    margin: 0 5px
+    margin: 0 5px;
 }
 
 .note-popover .popover-content .note-color .note-dropdown-menu .note-palette .note-palette-title,
@@ -1433,7 +1441,7 @@ a.note-dropdown-item:hover {
 
 .note-popover .popover-content .note-dropdown-menu,
 .note-editor .note-toolbar .note-dropdown-menu {
-    min-width: 160px
+    min-width: 180px
 }
 
 .note-popover .popover-content .note-dropdown-menu.right,
