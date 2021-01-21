@@ -62,7 +62,7 @@
       orig( elems );
     };
   } )( $.cleanData );
-  debugger
+
   $.widget = function( name, base, prototype ) {
     var existingConstructor, constructor, basePrototype;
 
