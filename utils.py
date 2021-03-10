@@ -74,11 +74,11 @@ SUMMERNOTE_THEME_FILES = {
     },
     'bs4': {
         'base_css': (
-            '/static/bootstrap/css/bootstrap.min.css',
+            '//stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css',
         ),
         'base_js': (
-            '/static/js/lib/jquery.3.5.1.min.js',
-            '/static/bootstrap/js/bootstrap.bundle.min.js',
+            '//code.jquery.com/jquery-3.3.1.min.js',
+            '//stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js',
         ),
         'default_css': (
             'summernote/summernote-bs4.css',
