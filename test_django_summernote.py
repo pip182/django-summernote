@@ -1,12 +1,7 @@
-# -*- coding: utf-8 -*-
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch
-
 import json
 import os
 import sys
+from unittest.mock import patch
 
 from django.apps import apps
 from django.contrib.admin.sites import AdminSite
@@ -302,7 +297,7 @@ class DjangoSummernoteTest(TestCase):
         url = reverse('django_summernote-upload_attachment')
 
         try:
-            from PIL import Image
+            from PIL import Image  # noqa: F401
             with open(IMAGE_FILE, 'rb') as fp:
                 response = self.client.post(url, {'files': [fp]})
                 self.assertEqual(response.status_code, 200)
