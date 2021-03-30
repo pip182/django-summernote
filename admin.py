@@ -38,5 +38,5 @@ class AttachmentAdmin(admin.ModelAdmin):
     form = AttachmentAdminForm
 
 
-if not get_config()['disable_attachment']:
-    admin.site.register(get_attachment_model(), AttachmentAdmin)
+# if not get_config()['disable_attachment']:
+    # admin.site.register(get_attachment_model(), AttachmentAdmin)
